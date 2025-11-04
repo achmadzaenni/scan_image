@@ -1,0 +1,286 @@
+      body {
+        background: linear-gradient(135deg, #e0e7ff, #f9fafb);
+        min-height: 100vh;
+        padding: 40px 0;
+        font-family: "Inter", sans-serif;
+      }
+      .nocopy{
+        user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+      }
+      .card-upload {
+        max-width: 700px;
+        margin: auto;
+        background: #fff;
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+      }
+      h3 {
+        font-weight: 700;
+        color: #1e293b;
+      }
+      .btn-primary {
+        background: #2563eb;
+        border: none;
+        transition: 0.2s;
+      }
+      .btn-primary:hover {
+        background: #1d4ed8;
+      }
+      .btn-primary:disabled {
+        background: #9ca3af !important;
+        cursor: not-allowed;
+      }
+      .btn-danger {
+        background: #dc2626;
+        border: none;
+      }
+      .btn-danger:hover {
+        background: #b91c1c;
+      }
+      .image-wrapper {
+        position: relative;
+        display: inline-block;
+        user-select: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      img.uploaded {
+        max-width: 100%;
+        display: block;
+        border-radius: 12px;
+        pointer-events: none;
+        -webkit-user-drag: none;
+      }
+      .ocr-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      .ocr-text {
+        position: absolute;
+        border-radius: 4px;
+        user-select: text;
+        pointer-events: auto;
+        overflow: hidden;
+        transition: all 0.15s ease;
+        opacity: 0.7;
+        color: transparent;
+        text-shadow: 0 0 0 #000;
+        white-space: pre;
+      }
+      .ocr-text.light {
+        background-color: rgba(255, 230, 0, 0.5);
+      }
+      .ocr-text.dark {
+        background-color: rgba(37, 99, 235, 0.6);
+      }
+      .ocr-text:hover {
+        transform: scale(1.05);
+        opacity: 0.8;
+        box-shadow: 0 0 8px rgba(37, 99, 235, 0.8);
+      }
+      .modal-header {
+        background-color: #ffffff;
+        color: #000000;
+      }
+      .modal-title {
+        font-weight: 600;
+      }
+      .disabled-btn,
+.disabled-btn * {
+    pointer-events: none !important;
+    opacity: 0.5 !important;
+}
+.disabled-dropzone {
+    opacity: 0.5 !important;
+}
+ .upload-container {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    margin: 20px auto;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #uploadForm {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .drop-zone {
+    border: 2px dashed #0d6efd;
+    border-radius: 12px;
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 40px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .drop-zone:hover {
+    background-color: #e9f3ff;
+    border-color: #0a58ca;
+  }
+  .drop-zone i {
+    font-size: 50px;
+    color: #0d6efd;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .drop-zone p {
+    font-size: 16px;
+    color: #6c757d;
+    margin: 0;
+  }
+  .drop-zone-active {
+    background: #e6f2ff !important;
+    border-color: #0d6efd !important;
+}
+#dropZone {
+  -webkit-user-select: auto !important;
+  user-select: auto !important;
+}
+  .image-preview {
+    margin-top: 15px;
+    text-align: center;
+  }
+  .image-preview img {
+    max-width: 100%;
+    border-radius: 10px;
+    border: 2px solid #dee2e6;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  .image-preview img:hover {
+    transform: scale(1.05);
+  }
+  #uploadBtn,
+  #clearBtn {
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px;
+    transition: all 0.3s ease;
+  }
+  #uploadBtn:hover {
+    background-color: #0a58ca;
+    transform: translateY(-2px);
+  }
+  #clearBtn:hover {
+    background-color: #bb2d3b;
+    transform: translateY(-2px);
+  }
+  #uploadForm,
+  #clearForm {
+    width: 100%;
+  }
+  .upload-container form#uploadForm,
+  .upload-container form#clearForm {
+    margin: 0;
+  }
+  #uploadForm + #clearForm {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+  }
+  #uploadForm + #clearForm button,
+  #uploadBtn {
+    width: 100%;
+  }
+  .upload-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .upload-container form#uploadForm + form#clearForm {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .upload-container form#uploadForm + form#clearForm button {
+    flex: 1;
+  }
+  @media (max-width: 576px) {
+    .upload-container form#uploadForm + form#clearForm {
+      flex-direction: column;
+    }
+  }
+      .clear-form button {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .clear-form i {
+        font-size: 1rem;
+      }
+      /* AGAR TOMBOL TIDAK TERPOTONG */
+.modal-content {
+  overflow: visible !important;
+}
+
+/* BUTTON CLOSE MODAL */
+.closebtn-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  position: relative;
+  overflow: visible; /* penting */
+}
+
+.closebtn-hdr .btn-close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  border: 2px solid rgb(235, 228, 228);
+  background-color: rgb(235, 228, 228);
+  border-radius: 20%;
+  width: 20px;
+  height: 20px;
+  box-shadow: 6px 6px 0 #c1d2d9;
+  transition: background-color 0.3s ease,
+              box-shadow 0.3s ease,
+              transform 0.3s ease;
+  opacity: 1 !important;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 9999; /* pastikan muncul */
+}
+
+.closebtn-hdr .btn-close::after {
+  content: "Close →";
+  position: absolute;
+  right: 110%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #25aaaa;
+  white-space: nowrap;
+  opacity: 0;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.closebtn-hdr .btn-close:hover {
+  transform: scale(1.2) translate(-3px, -3px);
+  box-shadow: 10px 10px 0 #D32F2F, 5px 5px 0 #c1d2d9;
+  background-color: #EF5350;
+}
+
+.closebtn-hdr .btn-close:hover::after {
+  right: 130%;
+  opacity: 1;
+}

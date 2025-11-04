@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Scan Image</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="card-upload">
+        <div class="position-relative text-center nocopy">
+          <h3 class="mb-4 text-center">
+            <i class="bi bi-camera2 me-1"></i>Scan Image
+          </h3>
+        </div>
+    <div class="upload-container mb-3">
+  <form
+    id="uploadForm"
+    action="/"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    <div id="dropZone" class="drop-zone position-relative text-center border p-6 mb-3 bg-light nocopy">
+      <span class="bg-black rounded-full"><i class="bi bi-cloud-arrow-up display-5 text-primary"></i></span>
+      <p class="text-muted mb-0">Drag & drop images here or click to select</p>
+      <p class="">(Max size 1Mb)</p>
+      <input
+        type="file"
+        id="fileInput"
+        name="image"
+        accept="image/*"
+        required
+        class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+        style="cursor: pointer; z-index: 5;"
+      />
+      <input type="text" id="hiddenPasteInput" autocomplete="off" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer; z-index: 10;" />
+    </div>
+    <div id="previewContainer" class="image-preview text-center mb-3"></div>
+    <div class="row g-2">
+      <div class="col-6">
+        <button
+          type="submit"
+          id="uploadBtn"
+          class="btn btn-primary"
+          data-has-uploaded="{{ '1' if uploaded_file else '0' }}"
+        >
+          <span class="btn-text"><i class="bi bi-upload me-1"></i>Upload</span>
+          <span
+            class="spinner-border spinner-border-sm ms-2 d-none"
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </button>
+      </div>
+    </form>
+      <div class="col-6">
+        <form id="clearForm" action="/" method="post" class="h-100">
+          <button
+            type="submit"
+            name="clear"
+            id="clearBtn"
+            class="btn btn-danger w-100 d-flex align-items-center justify-content-center"
+          >
+            <i class="bi bi-trash3 me-1"></i> Clear
+          </button>
+        </form>
+      </div>
+    </div>
+</div>
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+        <div
+          class="alert alert-{{ category }} alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message }}
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="imageModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header closebtn-hdr">
+            <h3 class="modal-title">Hasil Scan</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center bg-light">
+            {% if uploaded_file %}
+            <div class="image-wrapper" id="imageWrapper">
+              <img
+                id="uploadedImage"
+                class="uploaded"
+                src="{{ url_for('static', filename='uploads/' + uploaded_file) }}?v={{ timestamp }}"
+                alt="Uploaded"
+              />
+              <div class="ocr-layer" id="ocrLayer">
+                {% for item in ocr_data %}
+                <span>&nbsp;</span>
+                {% endfor %}
+              </div>
+              <div class="image-wrapper" id="imageWrapper"></div>
+              <div class="text-start">
+                <label for="ocrResult" class="form-label fw-bold"
+                  >Result:</label
+                >
+                <textarea
+                  id="ocrResult"
+                  class="form-control"
+                  rows="15"
+                  readonly
+                >{{ full_text }}</textarea
+                >
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          <div class="modal-footer justify-content-end">
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js')}}"></script>
+    <script>const uploaded_file = {{ 'true' if uploaded_file else 'false'}};</script>
+ </body>
+</html>
