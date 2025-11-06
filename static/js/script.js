@@ -13,6 +13,7 @@ $(document).ready(function () {
     const clearBtn = $('#clearBtn');
     const fileInput = $('#fileInput');
     const previewContainer = $('#previewContainer');
+    const modalCloseClearBtn = $('#modalCloseClearBtn');
     const dropZone = document.getElementById('dropZone');
     const hiddenPasteInput = document.getElementById('hiddenPasteInput'); 
 
@@ -101,6 +102,10 @@ $(document).ready(function () {
             setAfterUploadConvert();
         }
     });
+    modalCloseClearBtn.on('click', function () {
+        $("#fullscreenLoaded").css("display", "flex");
+        $("body").css("overflow", "hidden");
+    })
     fileInput.on('change', function (e) {
         const file = e.target.files[0];
         if (file) processFile(file);

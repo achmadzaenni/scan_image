@@ -16,7 +16,9 @@ app = Flask(__name__)
 app.secret_key = "secret"
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 ALLOWED_EXTENSIONS = {'png','jpg','jpeg'}
-ocr_engine = PaddleOCR(lang='en', use_angle_cls=True, show_log=False)
+
+def get_ocr_engine():
+    return PaddleOCR(lang='en', use_angle_cls=True, show_log=False)
 def allowed_file(name):
     return '.' in name and name.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
 def preprocess_image_for_ocr(img):
@@ -50,109 +52,116 @@ def response_minify(response):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    uploaded_file = None
-    ocr_data = []
-    orig_w = orig_h = None
-    full_text = ""
-    ocr_texts = []
-    mime_type = None
 
-    if request.method == "GET":
-        session.pop('_flashes', None)
-    if request.method == "POST":
-        if 'clear' in request.form:
-            flash("Image cleared!", "success")
-            return redirect(url_for("index"))
+    uploaded_file_full = None
+    mime_type = session.get("mime_type")
+    ocr_data = session.get("ocr_data", [])
+    full_text = session.get("full_text", "")
+    ocr_texts = session.get("ocr_texts", [])
+    orig_w = session.get("orig_w")
+    orig_h = session.get("orig_h")
 
+    if request.method == "POST" and "clear" in request.form:
+        keys = [
+            "mime_type", "ocr_data", "full_text", "ocr_texts",
+            "orig_w", "orig_h", "uploaded_prefix"
+        ]
+        for k in keys:
+            session.pop(k, None)
+        
+        uploaded_file_full = None
+        mime_type = None
+        ocr_data = []
+        full_text = ""
+        ocr_texts = []
+        orig_w = None
+        orig_h = None
+
+        flash("Image cleared!", "success")
+        return redirect(url_for("index"))
+
+    if request.method == "POST" and "image" in request.files:
         file = request.files.get("image")
-        if file and allowed_file(file.filename):
-            try:
-                file_bytes = np.frombuffer(file.read(), np.uint8)
-                img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-                if img is None:
-                    flash("Failed to read image.", "danger")
-                    return redirect(url_for("index"))
+        if not file or file.filename == "":
+            flash("Invalid file format. Use png/jpg/jpeg.", "danger")
+            return redirect(url_for("index"))
+        if not allowed_file(file.filename):
+            flash("Invalid file format. Use png/jpg/jpeg.", "danger")
+            return redirect(url_for("index"))
+        try:
+            file_bytes = np.frombuffer(file.read(), np.uint8)
+            img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
-                orig_h, orig_w = img.shape[:2]
-                gray, thresh = preprocess_image_for_ocr(img)
-
-                try:
-                    result = ocr_engine.ocr(gray, cls=True)
-                except Exception:
-                    flash("OCR processing error.", "danger")
-                    return redirect(url_for("index"))
-
-                ocr_data = []
-
-                lines_by_y = []
-
-                for line in result:
-                    for box, (text, conf) in line:
-
-                        x_min = int(min([p[0] for p in box]))
-                        y_min = int(min([p[1] for p in box]))
-                        w = int(max([p[0] for p in box]) - x_min)
-                        h = int(max([p[1] for p in box]) - y_min)
-
-                        roi = gray[y_min:y_min + h, x_min:x_min + w] if (h > 0 and w > 0) else None
-                        brightness = int(roi.mean()) if (roi is not None and roi.size > 0) else 255
-                        bg_color = 'light' if brightness < 128 else 'dark'
-
-                        ocr_data.append({
-                            'text': text,
-                            'x': x_min,
-                            'y': y_min,
-                            'w': w,
-                            'h': h,
-                            'bg': bg_color
-                        })
-
-                        lines_by_y.append((y_min, x_min, text))
-
-                lines_by_y.sort(key=lambda x: (x[0], x[1]))
-
-                full_text = ""
-                current_line = []
-                last_y = None
-
-                for y, x, text in lines_by_y:
-                    if last_y is None or abs(y - last_y) <= 25:
-                        current_line.append(text)
-                    else:
-                        full_text += " ".join(current_line) + "\n"
-                        current_line = [text]
-                    last_y = y
-
-                if current_line:
-                    full_text += " ".join(current_line)
-
-                ocr_texts = full_text.split()
-
-                ext = file.filename.rsplit('.',1)[1].lower()
-                if ext in ['jpg','jpeg']:
-                    mime_type = "image/jpeg"
-                    encode_ext = ".jpg"
-                elif ext == 'png':
-                    mime_type = "image/png"
-                    encode_ext = ".png"
-                else:
-                    mime_type = "application/octet-stream"
-                    encode_ext = ".png"
-
-                _, buffer = cv2.imencode(encode_ext, img)
-                uploaded_file = base64.b64encode(buffer).decode("utf-8")
-                flash("Image uploaded & processed successfully!", "success")
-
-            except Exception as e:
-                print("ERROR:", e)
-                flash("Processing error.", "danger")
+            if img is None:
+                flash("Failed to read image.", "danger")
                 return redirect(url_for("index"))
 
-        else:
-            flash("Invalid file format. Use png/jpg/jpeg.", "danger")
+            orig_h, orig_w = img.shape[:2]
+            gray, thresh = preprocess_image_for_ocr(img)
+            engine = get_ocr_engine()
+            result = engine.ocr(gray, cls=True)
+            ocr_data = []
+            lines_by_y = []
 
-    return render_template("index.html",
-        uploaded_file=uploaded_file,
+            for line in result:
+                for box, (text, conf) in line:
+                    x_min = int(min([p[0] for p in box]))
+                    y_min = int(min([p[1] for p in box]))
+                    w = int(max([p[0] for p in box]) - x_min)
+                    h = int(max([p[1] for p in box]) - y_min)
+
+                    ocr_data.append({
+                        "text": text,
+                        "x": x_min,
+                        "y": y_min,
+                        "w": w,
+                        "h": h,
+                    })
+
+                    lines_by_y.append((y_min, x_min, text))
+
+            lines_by_y.sort(key=lambda x: (x[0], x[1]))
+            full_text = ""
+            current = []
+            last_y = None
+
+            for y, x, text in lines_by_y:
+                if last_y is None or abs(y - last_y) <= 25:
+                    current.append(text)
+                else:
+                    full_text += " ".join(current) + "\n"
+                    current = [text]
+                last_y = y
+
+            if current:
+                full_text += " ".join(current)
+
+            ocr_texts = full_text.split()
+
+            ext = file.filename.rsplit(".", 1)[1].lower()
+            mime_type = "image/png" if ext == "png" else "image/jpeg"
+            encode_ext = ".png" if ext == "png" else ".jpg"
+
+            _, buffer = cv2.imencode(encode_ext, img)
+            uploaded_file_full = base64.b64encode(buffer).decode("utf-8")
+            session["mime_type"] = mime_type
+            session["ocr_data"] = ocr_data
+            session["full_text"] = full_text
+            session["ocr_texts"] = ocr_texts
+            session["orig_w"] = orig_w
+            session["orig_h"] = orig_h
+            session["uploaded_prefix"] = uploaded_file_full[:50]
+
+            flash("Image uploaded & processed successfully!", "success")
+
+        except Exception as e:
+            print("ERROR:", e)
+            flash("Processing error.", "danger")
+            return redirect(url_for("index"))
+
+    return render_template(
+        "index.html",
+        uploaded_file=uploaded_file_full,
         mime_type=mime_type,
         ocr_data=ocr_data,
         ocr_texts=ocr_texts,
