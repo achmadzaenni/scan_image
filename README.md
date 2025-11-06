@@ -20,7 +20,7 @@
    ```bash
    python --version
    ```
-   Melihat: `Python 3.10.x`
+   Versi yang digunakan: `Python 3.10.x`
 
 ### 2. Clone Repository
 
@@ -123,6 +123,6 @@ Ini akan menginstal semua pustaka yang diperlukan, termasuk:
    ```
 
 Setelah membuat sertifikat:
-1. Pindahkan kedua file sertifikat (`cert.pem` dan `key.pem`) ke folder `scan_image`
+1. Pindahkan kedua file ssl (`cert.pem` dan `key.pem`) ke folder `scan_image`
 2. Pastikan file sertifikat berada di folder yang sama dengan file `app.py`
 3. File sertifikat harus bernama persis `cert.pem` dan `key.pem`
