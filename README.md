@@ -1,8 +1,4 @@
-# 🔍 OCR Web App (Flask + OpenCV + PaddleOCR)
-
-A simple yet powerful web application to extract text from images using **Flask**, **OpenCV**, and **PaddleOCR**.  
-This project includes image preprocessing, OCR extraction, and clean UI presentation.
-
+# Scan Image
 ---
 
 ## ⭐ Badges
