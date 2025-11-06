@@ -23,7 +23,5 @@ This project includes image preprocessing, OCR extraction, and clean UI presenta
 
 ## ✅ 1. Clone Repository
 
-Ganti `username` dengan username GitHub kamu.
-
 ```bash
-git clone https://github.com/username/ocr-webapp.git
+git clone https://github.com/achmadzaenni/scan_image.git
