@@ -96,6 +96,8 @@ $(document).ready(function () {
                 timer: 1500
             });
         } else {
+            $("#fullscreenLoaded").css("display", "flex");
+            $("body").css("overflow", "hidden");
             setAfterUploadConvert();
         }
     });
@@ -193,6 +195,8 @@ $(document).ready(function () {
             }
         });
     }
+    $("#fullscreenLoaded").hide();
+    $("body").css("overflow", "auto");
     if (uploaded_file){
         const img = $('#uploadedImage');
         const ocrLayer = $('#ocrLayer');
@@ -234,7 +238,4 @@ $(document).ready(function () {
         clearBtn.removeClass('disabled-btn');
         disableDropZone();
     })
-    $(window).on('beforeunload', function () {
-        navigator.sendBeacon("/cleanup_temp");
-    });
 });

@@ -103,7 +103,7 @@
               <img
                 id="uploadedImage"
                 class="uploaded"
-                src="{{ url_for('static', filename='uploads/' + uploaded_file) }}?v={{ timestamp }}"
+                src="data:{{ mime_type }};base64,{{ uploaded_file }}"
                 alt="Uploaded"
               />
               <div class="ocr-layer" id="ocrLayer">
@@ -111,7 +111,6 @@
                 <span>&nbsp;</span>
                 {% endfor %}
               </div>
-              <div class="image-wrapper" id="imageWrapper"></div>
               <div class="text-start">
                 <label for="ocrResult" class="form-label fw-bold"
                   >Result:</label
@@ -131,6 +130,10 @@
           </div>
         </div>
       </div>
+    </div>
+    <div id="fullscreenLoaded">
+      <div class="spinner-border"></div>
+      <p class="load">Loading...</p>
     </div>
     <script src="{{ url_for('static', filename='js/main.js')}}"></script>
     <script>const uploaded_file = {{ 'true' if uploaded_file else 'false'}};</script>

@@ -226,7 +226,6 @@
       .clear-form i {
         font-size: 1rem;
       }
-      /* AGAR TOMBOL TIDAK TERPOTONG */
 .modal-content {
   overflow: visible !important;
 }
@@ -238,7 +237,7 @@
   justify-content: space-between;
   padding: 0.5rem 1rem;
   position: relative;
-  overflow: visible; /* penting */
+  overflow: visible;
 }
 
 .closebtn-hdr .btn-close {
@@ -257,7 +256,7 @@
   opacity: 1 !important;
   cursor: pointer;
   overflow: hidden;
-  z-index: 9999; /* pastikan muncul */
+  z-index: 9999;
 }
 
 .closebtn-hdr .btn-close::after {
@@ -283,4 +282,29 @@
 .closebtn-hdr .btn-close:hover::after {
   right: 130%;
   opacity: 1;
+}
+#fullscreenLoaded{
+    display:none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(240,240,240,0.85);
+    backdrop-filter: blur(2px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: opacity 0.3s ease;
+}
+.spinner-border{
+  width: 2rem;
+  height: 2rem;
+}
+.load{
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #333;
+}
+#ocrResult{
+  white-space: pre-wrap;
 }
