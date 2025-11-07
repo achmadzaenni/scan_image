@@ -91,10 +91,10 @@
       tabindex="-1"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 class="modal-title">Hasil Scan</h3>
+            <h5 class="modal-title">Hasil Scan</h5>
             <div class="ms-auto">
               <form id="clearForm" action="/" method="post" class="m-0 p-0">
                 <button type="submit" id="modalCloseClearBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -103,30 +103,34 @@
           </div>
           <div class="modal-body text-center bg-light">
             {% if uploaded_file %}
-            <div class="image-wrapper" id="imageWrapper">
-              <img
-                id="uploadedImage"
-                class="uploaded"
-                src="data:{{ mime_type }};base64,{{ uploaded_file }}"
-                alt="Uploaded"
-              />
-              <div class="ocr-layer" id="ocrLayer">
-                {% for item in ocr_data %}
-                <span>&nbsp;</span>
-                {% endfor %}
-              </div>
-              <div class="text-start">
-                <label for="ocrResult" class="form-label fw-bold"
-                  >Result:</label
-                >
-                <textarea
-                  id="ocrResult"
-                  class="form-control"
-                  rows="15"
-                  readonly
-                >{{ full_text }}</textarea
-                >
-              </div>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="image-wrapper" id="imageWrapper">
+                    <img
+                    id="uploadedImage"
+                    class="uploaded"
+                    src="data:{{ mime_type }};base64,{{ uploaded_file }}"
+                    alt="Uploaded"
+                    />
+                    <div class="ocr-layer" id="ocrLayer">
+                      {% for item in ocr_data %}
+                    <span>&nbsp;</span>
+                    {% endfor %}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="ocrResult" class="form-label fw-bold d-flex justify-content-start">Result:</label>
+                  <textarea
+                    id="ocrResult"
+                    class="form-control"
+                    rows="15"
+                    readonly
+                    >{{ full_text }}</textarea
+                    >
+                  </div>
+                </div>
             </div>
             {% endif %}
           </div>
