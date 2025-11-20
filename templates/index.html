@@ -3,143 +3,124 @@
   <head>
     <meta charset="UTF-8" />
     <title>Scan Image</title>
-   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css')}}">
   </head>
-  <body>
-    <div class="container">
-      <div class="card-upload">
-        <div class="position-relative text-center nocopy">
-          <h3 class="mb-4 text-center">
-            <i class="bi bi-camera2 me-1"></i>Scan Image
-          </h3>
-        </div>
-    <div class="upload-container mb-3">
-  <form
-    id="uploadForm"
-    action="/"
-    method="post"
-    enctype="multipart/form-data"
-  >
-    <div id="dropZone" class="drop-zone position-relative text-center border p-6 mb-3 bg-light nocopy">
-      <span class="bg-black rounded-full"><i class="bi bi-cloud-arrow-up display-5 text-primary"></i></span>
-      <p class="text-muted mb-0">Drag & drop images here or click to select</p>
-      <p class="">(Max size 1Mb)</p>
-      <input
-        type="file"
-        id="fileInput"
-        name="image"
-        accept="image/*"
-        required
-        class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
-        style="cursor: pointer; z-index: 5;"
-      />
-      <input type="text" id="hiddenPasteInput" autocomplete="off" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer; z-index: 10;" />
-    </div>
-    <div id="previewContainer" class="image-preview text-center mb-3"></div>
-    <div class="row g-2">
-      <div class="col-6">
-        <button
-          type="submit"
-          id="uploadBtn"
-          class="btn btn-primary"
-          data-has-uploaded="{{ '1' if uploaded_file else '0' }}"
-        >
-          <span class="btn-text"><i class="bi bi-upload me-1"></i>Upload</span>
-          <span
-            class="spinner-border spinner-border-sm ms-2 d-none"
-            role="status"
-            aria-hidden="true"
-          ></span>
-        </button>
+  <body class="min-h-screen bg-gradient-to-br from-indigo-100 to-gray-50 py-10 flex items-center justify-center font-inter">
+    <div class="flex flex-col w-full max-w-[700px] mx-auto bg-white shadow-xl rounded-2xl p-8">
+      <div class="text-center select-none mb-6">
+        <h3 class="font-bold text-3xl text-slate-800 flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-10">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+        </svg>
+          Scan Image
+        </h3>
       </div>
-    </form>
-      <div class="col-6">
-        <form id="clearForm" action="/" method="post" class="h-100">
-          <button
+      <div class="flex flex-col gap-4 bg-white rounded-xl shadow-xl p-6">
+        <form action="/" method="post" enctype="multipart/form-data"
+          class="flex flex-col gap-4">
+          <div id="dropZone" class="relative text-center p-10 rounded-xl border border-gray-200 cursor-pointer bg-gradient-to-tl from-indigo-100 to-gray-100 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-14 text-blue-600 mx-auto mb-2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+            </svg>
+            <p class="text-gray-600 select-none">Drag & drop images here or click to select</p>
+            <p class="text-gray-500 text-sm select-none">(Max size 1Mb)</p>
+            <input type="file" id="fileInput" name="image" accept="image/*" required class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-5" />
+            <input type="text" id="hiddenPasteInput" autocomplete="off" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10"/>
+          </div>
+          <div id="previewContainer" class="text-center"></div>
+          <div class="grid grid-cols-2 gap-3">
+            <button 
             type="submit"
-            name="clear"
-            id="clearBtn"
-            class="btn btn-danger w-100 d-flex align-items-center justify-content-center"
-          >
-            <i class="bi bi-trash3 me-1"></i> Clear
-          </button>
+            id="uploadBtn"
+              class="py-3 rounded-lg bg-blue-600 flex items-center justify-center gap-1 text-white font-semibold hover:bg-blue-700 transition select-none"
+              data-has-uploaded="{{ '1' if uploaded_file else '0' }}">
+              <span class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
+                    </svg>
+                    Upload
+                </span>
+            </button>
         </form>
+          <form action="/" method="post">
+            <button name="clear" type="submit" id="clearBtn"
+              class="w-full py-3 rounded-lg bg-red-600 text-white flex justify-center items-center font-semibold hover:bg-red-700 transition select-none gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
+              Clear
+            </button>
+          </form>
       </div>
-    </div>
-</div>
-        {% with messages = get_flashed_messages(with_categories=true) %} {% if
-        messages %} {% for category, message in messages %}
-        <div
-          class="alert alert-{{ category }} alert-dismissible fade show"
-          role="alert"
-        >
-          {{ message }}
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"
-          ></button>
-        </div>
-        {% endfor %} {% endif %} {% endwith %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+  <div 
+    class="
+      alert mb-3 p-4 rounded-lg border fade show transition-all flex items-start justify-between gap-4
+      {% if category == 'success' %} bg-green-50 border-green-400 text-green-800 {% endif %}
+      {% if category == 'error' %} bg-red-50 border-red-400 text-red-800 {% endif %}
+      {% if category == 'warning' %} bg-yellow-50 border-yellow-400 text-yellow-800 {% endif %}
+      {% if category == 'info' %} bg-blue-50 border-blue-400 text-blue-800 {% endif %}
+    "
+  >
+      <span>{{ message }}</span>
+      <button 
+        class="text-gray-600 hover:text-black"
+        onclick="this.parentElement.remove()"
+      >
+        ✕
+      </button>
+  </div>
+  {% endfor %}
+{% endif %}
+{% endwith %}
       </div>
-    </div>
-    <div
-      class="modal fade"
-      id="imageModal"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
-      tabindex="-1"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Hasil Scan</h5>
-            <div class="ms-auto">
-              <form id="clearForm" action="/" method="post" class="m-0 p-0">
-                <button type="submit" id="modalCloseClearBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </form>
+      <div id="conmodal" class="fixed inset-0 bg-black/50 flex items-center justify-center opacity-0 invisible transition-opacity duration-500">
+        <div id="modalbox" class="bg-white w-full max-w-3xl rounded-xl shadow-xl transform scale-95 opacity-0 transition-all duration-500">
+            <div class="flex justify-between items-center p-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold">Hasil Scan</h2>
+                <form id="clearForm" action="/" method="post" class="m-0 p-0">
+                    <button type="submit" id="btn-close" class="text-gray-500 hover:text-black text-2xl font-bold leading-none cursor-pointer">&times;</button>
+                </form>
             </div>
-          </div>
-          <div class="modal-body text-center bg-light">
-            {% if uploaded_file %}
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <div class="image-wrapper" id="imageWrapper">
-                    <img
-                    id="uploadedImage"
-                    class="uploaded"
-                    src="data:{{ mime_type }};base64,{{ uploaded_file }}"
-                    alt="Uploaded"
-                    />
-                    <div class="ocr-layer" id="ocrLayer">
-                      {% for item in ocr_data %}
-                    <span>&nbsp;</span>
-                    {% endfor %}
+            <div class="p-4 space-y-4">
+                {% if uploaded_file %}
+                <div class="w-full">
+                    <div class="grid grid-cols-2 mb-3 gap-4">
+                        <div class="relative flex items-center select-none overflow-hidden">
+                            <img id="uploadedImage" class="max-w-full block rounded-xl pointer-events-none select-none" draggable="false" src="data:{{ mime_type }};base64,{{ uploaded_file }}" alt="Uploaded"/>
+                            <div class="absolute top-0 left-0 w-full h-full pointer-events-none" id="ocrLayer">
+                                {% for item in ocr_data %}
+                                <span>&nbsp;</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="relative flex flex-col items-start">
+                            <label for="ocrResult" class="block text-sm font-medium text-gray-700">Result:</label>
+                            <textarea id="ocrResult" rows="15" readonly class=" custom-scroll w-full p-2 border border-gray-300 rounded-md text-gray-700 bg-gray-100">{{ full_text }}</textarea>
+                        </div>
                     </div>
-                  </div>
                 </div>
-                <div class="col-md-6">
-                  <label for="ocrResult" class="form-label fw-bold d-flex justify-content-start">Result:</label>
-                  <textarea
-                    id="ocrResult"
-                    class="form-control"
-                    rows="15"
-                    readonly
-                    >{{ full_text }}</textarea
-                    >
-                  </div>
-                </div>
-            </div>
-            {% endif %}
+                {% endif %}
           </div>
         </div>
       </div>
+    <div id="fullscreenLoaded" class="fixed inset-0 bg-gray-100/50 backdrop-blur-sm z-50 flex justify-center items-center flex-col transition-opacity duration-300 ease-in-out cursor-progress">
+    <div role="status">
+        <svg aria-hidden="true" 
+        class="w-8 h-8 text-gray-300 animate-spin fill-blue-600" 
+        viewBox="0 0 100 101" fill="none" 
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 50.59C100 78.20 77.61 100.59 50 100.59C22.38 100.59 0 78.20 0 50.59C0 22.97 22.38 0.59 50 0.59C77.61 0.59 100 22.97 100 50.59ZM9.08 50.59C9.08 73.18 27.40 91.50 50 91.50C72.59 91.50 90.91 73.18 90.91 50.59C90.91 27.99 72.59 9.67 50 9.67C27.40 9.67 9.08 27.99 9.08 50.59Z"
+            fill="currentColor" />
+        <path d="M93.96 39.04C96.39 38.40 97.86 35.91 97.00 33.55C95.29 28.82 92.87 24.36 89.81 20.34C85.84 15.11 80.88 10.72 75.21 7.41C69.54 4.10 63.27 1.94 56.76 1.05C51.76 0.36 46.69 0.44 41.73 1.27C39.26 1.69 37.81 4.19 38.45 6.62C39.08 9.04 41.56 10.47 44.05 10.10C47.85 9.54 51.71 9.52 55.54 10.04C60.86 10.77 65.99 12.54 70.63 15.25C75.27 17.96 79.33 21.56 82.58 25.84C84.91 28.91 86.79 32.29 88.18 35.87C89.08 38.21 91.54 39.67 93.96 39.04Z"
+            fill="currentFill" />
+        </svg>
+        <span class="sr-only">Loading...</span>
     </div>
-    <div id="fullscreenLoaded">
-      <div class="spinner-border"></div>
-      <p class="load">Loading...</p>
+    <p class="load mt-1 text-gray-700 text-sm">Loading...</p>
+    </div>
     </div>
     <script src="{{ url_for('static', filename='js/main.js')}}"></script>
     <script>const uploaded_file = {{ 'true' if uploaded_file else 'false'}};</script>

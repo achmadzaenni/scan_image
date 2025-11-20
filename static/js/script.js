@@ -1,4 +1,24 @@
-$(document).ready(function () {
+        const conmodal = $("#conmodal");
+        const modalbox = $("#modalbox");
+        const closebtn = $("#btn-close");
+        let dropLock = false;
+
+        function openModal(){
+            conmodal.removeClass("opacity-0 invisible");
+            modalbox.removeClass("opacity-0 scale-95").addClass("opacity-100 scale-100");
+            dropLock = true;
+        };
+        function closeModal(){
+            conmodal.addClass("opacity-0 invisible");
+            modalbox.removeClass("opacity-0 scale-100").addClass("opacity-0 scale-95");
+            dropLock = false;
+        };
+        closebtn.on("click", closeModal);
+
+        conmodal.on("click", function(e){
+            if (e.target === this) return;
+        })
+        $(document).ready(function () {
 
     setTimeout(function() {
         let alerts = document.querySelectorAll(".alert");
@@ -13,7 +33,6 @@ $(document).ready(function () {
     const clearBtn = $('#clearBtn');
     const fileInput = $('#fileInput');
     const previewContainer = $('#previewContainer');
-    const modalCloseClearBtn = $('#modalCloseClearBtn');
     const dropZone = document.getElementById('dropZone');
     const hiddenPasteInput = document.getElementById('hiddenPasteInput'); 
 
@@ -25,35 +44,45 @@ $(document).ready(function () {
         dropZone.style.pointerEvents = "auto";
         dropZone.style.opacity = "1";
     }
+    function enableButton(btn) {
+    btn.removeAttr("disabled")
+       .removeClass("opacity-50 cursor-not-allowed")
+       .addClass("cursor-pointer");
+}
+function disableButton(btn) {
+    btn.attr("disabled", true)
+       .removeClass("cursor-pointer")
+       .addClass("opacity-50 cursor-not-allowed");
+}
     function setInitialState() {
-        uploadBtn.addClass('disabled-btn');
-        clearBtn.addClass('disabled-btn');
-        enableDropZone();
-    }
+    disableButton(uploadBtn);
+    disableButton(clearBtn);
+    enableDropZone();
+}
     function setAfterFileSelected() {
-        uploadBtn.removeClass('disabled-btn');
-        clearBtn.removeClass('disabled-btn');
-        disableDropZone();
-    }
+    enableButton(uploadBtn);
+    enableButton(clearBtn);
+    disableDropZone();
+}
     function setAfterUploadConvert() {
-        uploadBtn.addClass('disabled-btn');
-        clearBtn.removeClass('disabled-btn');
-        disableDropZone();
-    }
+    disableButton(uploadBtn);
+    enableButton(clearBtn);
+    disableDropZone();
+}
     function setAfterClear() {
-        uploadBtn.addClass('disabled-btn');
-        clearBtn.addClass('disabled-btn');
-        enableDropZone();
-    }
+    disableButton(uploadBtn);
+    disableButton(clearBtn);
+    enableDropZone();
+}
     setInitialState();
     const hasUploaded = uploadBtn.data('has-uploaded') === 1 || uploadBtn.data('has-uploaded') === "1";
     if (hasUploaded) {
-        uploadBtn.addClass('disabled-btn');
+        uploadBtn.addClass('opacity-50 cursor-not-allowed').attr('disabled', true);
         disableDropZone();
     }
     function processFile(file) {
         if (file.size > 1 * 1024 * 1024) {
-            Swal.fire({ icon: 'error', title: 'File size is too large' });
+            Swal.fire({ icon: 'error', title: 'File size is too large', position: 'top-end', showConfirmButton: false, timer: 1500, toast: true });
             return false;
         }
         if (file.type.indexOf("image") === -1) {
@@ -74,51 +103,51 @@ $(document).ready(function () {
         const reader = new FileReader();
         reader.onload = function (event) {
             previewContainer.html(`
-                <div class="text-center mt-3">
-                    <img src="${event.target.result}" 
-                         alt="Preview Gambar" 
-                         class="img-fluid rounded shadow"
-                         style="max-width: 400px; border: 2px solid #ddd;"/>
+                <div class="flex justify-center mt-3">
+                    <img src="${event.target.result}" alt="Preview Gambar" class="max-w-xs rounded shadow-md border-2 border-gray-200"/>
                 </div>`);
         };
         reader.readAsDataURL(file);
         setAfterFileSelected();
         return true;
     }
-    uploadBtn.on('click', function (e) {
-        if ($(this).hasClass('disabled-btn')) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'warning',
-                title: 'The picture still exists',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        } else {
-            $("#fullscreenLoaded").css("display", "flex");
-            $("body").css("overflow", "hidden");
-            setAfterUploadConvert();
-        }
-    });
-    modalCloseClearBtn.on('click', function () {
-        $("#fullscreenLoaded").css("display", "flex");
-        $("body").css("overflow", "hidden");
-    })
+   uploadBtn.on('click', function (e) {
+    if ($(this).prop('disabled')) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'warning',
+            title: 'The picture still exists',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1500
+        });
+        return;
+    }
+    e.preventDefault();
+    $("#fullscreenLoaded").removeClass("hidden").addClass("flex");
+    $("body").addClass("overflow-hidden");
+    setAfterUploadConvert();
+    setTimeout(() => {
+        $(this).closest("form").submit();
+    }, 300);
+});
+        closebtn.on('click', function () {
+            $("#fullscreenLoaded").removeClass("hidden").addClass("flex");
+            $("body").addClass("overflow-hidden");
+        })
     fileInput.on('change', function (e) {
         const file = e.target.files[0];
         if (file) processFile(file);
     });
     clearBtn.on('click', function () {
-        uploadBtn.removeClass('disabled-btn').data('has-uploaded', '0');
+        uploadBtn.removeClass('opacity-50 cursor-not-allowed').data('has-uploaded', '0');
         fileInput.val('');
         previewContainer.empty();
         setAfterClear();
         Swal.fire({
             icon: 'success',
             title: 'Delete Success',
-            text: 'Button upload active again',
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
@@ -134,24 +163,29 @@ $(document).ready(function () {
     ['dragleave', 'drop'].forEach(evt => {
         dropZone.addEventListener(evt, () => dropZone.classList.remove('drop-zone-active'));
     });
-    dropZone.addEventListener('drop', (e) => {
-        if (uploadBtn.hasClass('disabled-btn') === false) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'The picture still exists!',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500
-            });
+   dropZone.addEventListener('drop', (e) => {
+    if(dropLock) return;
+    if (!uploadBtn.prop('disabled')) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'The picture still exists!',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1500
+        });
+        return;
+    }
+    const files = e.dataTransfer.files;
+    if (files.length > 0) processFile(files[0]);
+});
+    $(document).on('paste', function (e) {
+        if(dropLock) {
+            e.preventDefault();
             return;
         }
-        const files = e.dataTransfer.files;
-        if (files.length > 0) processFile(files[0]);
-    });
-    $(document).on('paste', function (e) {
         e.preventDefault(); 
-        if (!uploadBtn.hasClass('disabled-btn')) {
+        if (!uploadBtn.hasClass('opacity-50 cursor-not-allowed')) {
              Swal.fire({
                 icon:'warning',
                 title: 'The picture still exists',
@@ -200,8 +234,8 @@ $(document).ready(function () {
             }
         });
     }
-    $("#fullscreenLoaded").hide();
-    $("body").css("overflow", "auto");
+    $("#fullscreenLoaded").addClass("hidden");
+    $("body").removeClass("overflow-hidden");
     if (uploaded_file){
         const img = $('#uploadedImage');
         const ocrLayer = $('#ocrLayer');
@@ -231,16 +265,14 @@ $(document).ready(function () {
         } else {
             img.on('load', positionOverlays);
         }
-        $(window).on('resize', function () {
-            setTimeout(positionOverlays, 150);
-        });
-        const imageModal = new bootstrap.Modal($('#imageModal')[0]);
-        imageModal.show();
-        $('#imageModal').on('shown.bs.modal', positionOverlays);
+        openModal();
+        setTimeout(positionOverlays, 50);
     }
-    $('#imageModal').on('hidden.bs.modal', function () {
-        uploadBtn.addClass('disabled-btn');
-        clearBtn.removeClass('disabled-btn');
-        disableDropZone();
-    })
+    conmodal.on("tansitionend", function () {
+        if (conmodal.hasClass("invisible")){
+            uploadBtn.addClass('opacity-50 cursor-not-allowed').attr('disabled', true);;
+            clearBtn.removeClass('opacity-50 cursor-not-allowed').attr('disabled', true);;
+            disableDropZone();
+        }
+    });
 });
