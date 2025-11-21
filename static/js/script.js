@@ -1,3 +1,39 @@
+$(window).on('load', function () {
+    const defaultIcon = $('#default-icon-contact-details');
+    const successIcon = $('#success-icon-contact-details');
+    const defaultTooltipMessage = $('#default-tooltip-message-contact-details');
+    const successTooltipMessage = $('#success-tooltip-message-contact-details');
+    const tooltip = $('#tooltip-ocrResult');
+    $('#btn-copy').on('click', function () {
+        const text = $('#ocrResult').val();
+        navigator.clipboard.writeText(text).then(function () {
+            showSuccess();
+            setTimeout(() => {
+                resetToDefault();
+            }, 2000);
+        });
+    });
+    
+    function showSuccess() {
+        defaultIcon.addClass('hidden');
+        successIcon.removeClass('hidden');
+        successIcon.addClass('text-blue-500');
+        defaultTooltipMessage.addClass('hidden');
+        successTooltipMessage.removeClass('hidden');
+        successTooltipMessage.addClass('text-blue-500');
+        tooltip.removeClass('invisible opacity-0').addClass('visible opacity-100');
+    }
+
+    function resetToDefault() {
+        defaultIcon.removeClass('hidden');
+        successIcon.addClass('hidden');
+        successIcon.removeClass('text-blue-500');
+        defaultTooltipMessage.removeClass('hidden');
+        successTooltipMessage.addClass('hidden');
+        successTooltipMessage.removeClass('text-blue-500');
+        tooltip.addClass('invisible opacity-0').removeClass('visible opacity-100');
+    }
+});
         const conmodal = $("#conmodal");
         const modalbox = $("#modalbox");
         const closebtn = $("#btn-close");

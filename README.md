@@ -23,16 +23,13 @@
    Versi yang digunakan: `Python 3.10.x`
 
 ### 2. Clone Repository
-
 ```bash
 git clone https://github.com/achmadzaenni/scan_image.git
 cd scan_image
 ```
 
 ### 3. Install Required Libraries
-
 Instal semua dependensi yang diperlukan menggunakan pip:
-
 ```bash
 pip install -r requirements.txt
 ```
@@ -44,6 +41,18 @@ Ini akan menginstal semua pustaka yang diperlukan, termasuk:
 - PaddleOCR
 - PaddlePaddle
 - Dll
+
+### 4. Install tailwind/cli
+
+Lakukan install tailwind/cli:
+```bash
+npm install tailwindcss @tailwindcss/cli
+```
+
+Lalu jika berhasil jalankan di terminal untuk agar bisa digunakan fungsi tailwind:
+```bash
+npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
+```
 
 ## Running the Application
 
