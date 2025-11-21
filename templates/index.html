@@ -89,7 +89,7 @@
                 <div class="w-full">
                     <div class="grid grid-cols-2 mb-3 gap-4">
                         <div class="relative flex items-center select-none overflow-hidden">
-                            <img id="uploadedImage" class="max-w-full block rounded-xl pointer-events-none select-none" draggable="false" src="data:{{ mime_type }};base64,{{ uploaded_file }}" alt="Uploaded"/>
+                            <img id="uploadedImage" class="max-w-full block pointer-events-none select-none" draggable="false" src="data:{{ mime_type }};base64,{{ uploaded_file }}" alt="Uploaded"/>
                             <div class="absolute top-0 left-0 w-full h-full pointer-events-none" id="ocrLayer">
                                 {% for item in ocr_data %}
                                 <span>&nbsp;</span>
