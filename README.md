@@ -51,7 +51,7 @@ npm install tailwindcss @tailwindcss/cli
 
 Lalu jika berhasil jalankan di terminal untuk agar bisa digunakan fungsi tailwind:
 ```bash
-npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
+npm run watch:css
 ```
 
 ## Running the Application
